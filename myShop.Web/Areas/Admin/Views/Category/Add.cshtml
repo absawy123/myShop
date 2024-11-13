@@ -1,0 +1,56 @@
+﻿@model Category
+
+@{
+    Layout = "_Dashboard";
+}
+
+
+<h4>Category</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-area="Admin" asp-controller="Category" asp-action="Add" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <textarea id="mytextarea" asp-for="Description" class="form-control" style="height: 100px !important; width: 100% !important;"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div>
+    <a asp-area="Admin" asp-controller="Category" asp-action="Index">>> All Categories </a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+        <script>
+            tinymce.init({
+                selector: '#mytextarea', 
+                plugins: 'lists link image table code',
+                toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | code',
+                menubar: false,
+                height: 200,  // Set height of TinyMCE editor
+                width: '200%' // Set width of TinyMCE editor
+            });
+        </script>
+
+
+    }
+}
+

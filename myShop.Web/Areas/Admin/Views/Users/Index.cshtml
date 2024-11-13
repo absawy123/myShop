@@ -1,0 +1,78 @@
+﻿@using myShop.Entities.ViewModels.UserVm
+@model List<UserInfoVm>
+
+@{
+    ViewBag.PageTitle = "User Management";
+    ViewBag.CartTitle = "All Users";
+}
+
+<table id="usersTable" class="table table-hover  text-center">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Count > 0)
+        {
+            foreach (var userInfo in Model)
+            {
+                <tr>
+                    <td>@userInfo.Name</td>
+                    <td>@userInfo.Email</td>
+                    <td>@userInfo.Address</td>
+                    <td>
+                        @if (userInfo.LockoutEnd > DateTime.Now)
+                        {
+                            <a class="lockUnlockBtn btn btn-danger" data-id="@userInfo.userId">
+                                <i class="fas fa-lock ">  </i>
+                            </a>
+                        }
+                        else{
+                            <a class="lockUnlockBtn btn btn-success" data-id="@userInfo.userId">
+                                <i class="fas fa-lock-open "></i>
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+
+    </tbody>
+</table>
+
+<script>
+
+    document.getElementById("usersTable").addEventListener("click", function (e) {
+        const lockBtn = e.target
+        if (e.target.classList.contains("lockUnlockBtn")) {
+            e.preventDefault();
+            var id = e.target.getAttribute("data-id");
+
+            var request = new XMLHttpRequest();
+            request.open("Get", `/Admin/Users/LockUnlock/${id}`)
+            request.onload = function () {
+                if (request.status === 200 ) {
+                  var response =JSON.parse(request.response);
+                    if (response.status == "locked") {
+                         lockBtn.classList.remove("btn-success");
+                         lockBtn.classList.add("btn-danger");
+                        lockBtn.firstElementChild.classList.remove("fa-lock-open")
+                        lockBtn.firstElementChild.classList.add("fa-lock")
+                    }
+                    else{ 
+                        lockBtn.classList.remove("btn-danger");
+                         lockBtn.classList.add("btn-success");
+                        lockBtn.firstElementChild.classList.remove("fa-lock")
+                        lockBtn.firstElementChild.classList.add("fa-lock-open")
+                    }
+                }
+            }
+            request.send();
+        }
+    })
+
+</script>

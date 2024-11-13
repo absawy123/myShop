@@ -1,0 +1,69 @@
+﻿html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    max-width: 45px;
+    max-height: 45px;
+    object-fit: contain; /* or 'cover' depending on the desired behavior */
+    border-radius: 50%; /* to retain the rounded effect */
+}
+
+#ImagePreview {
+    max-width: 100%; /* Adjust this value as needed */
+    max-height: 600px; /* Adjust this value as needed for your preview size */
+    object-fit: contain; /* Ensure the entire image fits within the dimensions */
+}
+
+.card-img-top {
+    width: 100%;
+    height: 100%;
+    max-width: 450px;
+    max-height: 300px;
+    object-fit: cover; /*or 'cover' depending on the desired behavior */
+}
+
+.image-container {
+    max-width: 600px; /* Set maximum width for the container */
+    max-height: 700px; /* Set maximum height for the container */
+    overflow: hidden; /* Ensure any overflow of the image is hidden */
+}
+
+#ProductImage {
+    max-width: 100%; /* Ensure the image does not exceed its container's width */
+    height: auto; /* Allow the image to scale proportionally */
+    object-fit: cover; /* Scale the image to cover the container while preserving aspect ratio */
+}
+
+.card-container {
+    max-width: 450px;
+    max-height: 300px;
+    overflow: hidden;
+}
+
+#card-image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}

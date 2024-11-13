@@ -1,0 +1,123 @@
+﻿@{
+    ViewBag.PageTitle = "Product Management";
+    ViewBag.CartTitle = "Show All Products";
+    Layout = "_Dashboard";
+}
+
+<a class="btn btn-outline-success mb-4" asp-area="Admin" asp-controller="Product" asp-action="Add"> Add New </a>
+
+
+<table id="productTable">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody id="productTableBoady">
+        <!-- Data will be here -->
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const productTable = document.getElementById('productTable');
+
+            const request = new XMLHttpRequest();
+            request.open('GET', '/Admin/Product/GetProducts', true);
+
+            // When the request is done, this will be called
+            request.onload = function () {
+                if (request.status == 200) {
+                    // show the result
+                    const response = JSON.parse(request.responseText);
+                    const products = response.data;  // Array of products
+
+                    let tableBody = '';
+                    products.forEach(product => {
+                        tableBody +=
+                            `<tr>
+                                            <td>${product.name}</td>
+                                            <td>${product.price}</td>
+                                            <td>${product.description}</td>
+                                            <td>${product.categoryName}</td>
+                                            <td>
+                        <a href="/Admin/Product/Edit/${product.id}" class="btn btn-outline-primary"> Edit </a>
+                        <a href="/Admin/Product/Delete/${product.id}" data-id="${product.id}" class="btn btn-outline-danger deleteBtn">Delete</a>
+                                            </td>
+
+                                         </tr>`;
+                    });
+
+                    document.getElementById("productTableBoady").innerHTML = tableBody;
+
+                    // Initialize DataTable
+                    new DataTable(productTable);
+                }
+            };
+
+            request.send();
+        });
+
+        document.getElementById("productTable").addEventListener("click", function (e) {
+            if (e.target.classList.contains("deleteBtn")) {
+                e.preventDefault();
+                const productId = e.target.getAttribute("data-id");
+
+                // Show SweetAlert confirmation
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // If confirmed, proceed with AJAX call
+                        var request = new XMLHttpRequest();
+                        request.open("DELETE", `/Admin/Product/Delete/${productId}`);
+                        request.onload = function () {
+                            if (request.status == 200) {
+                                const response = JSON.parse(request.responseText);
+
+                                if (response.success) {
+                                    // Remove the deleted row from the table
+                                    e.target.closest("tr").remove();
+
+                                    // Show success SweetAlert
+                                    Swal.fire({
+                                        title: "Deleted!",
+                                        text: "Your product has been deleted.",
+                                        icon: "success"
+                                    });
+                                } else {
+                                    // Handle failure (optional)
+                                    Swal.fire({
+                                        title: "Error!",
+                                        text: "Something went wrong, please try again.",
+                                        icon: "error"
+                                    });
+                                }
+                            }
+                        };
+
+                        request.send();
+                    }
+                });
+            }
+        });
+
+
+
+    </script>
+}
+

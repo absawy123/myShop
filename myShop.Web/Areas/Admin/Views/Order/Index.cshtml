@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.PageTitle = "Order Management";
+    ViewBag.CartTitle = "Show All Orders";
+    Layout = "_Dashboard";
+}
+
+
+<table id="productTable">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>PhoneNumber</th>
+            <th>Address</th>
+            <th>Order Status</th>
+            <th>Total Price</th>
+            <th> Order Details</th>
+        </tr>
+    </thead>
+    <tbody id="productTableBoady">
+        <!-- Data will be here -->
+    </tbody>
+</table>
+
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const productTable = document.getElementById('productTable');
+
+            const request = new XMLHttpRequest();
+            request.open('GET', '/Admin/Order/GetOrders', true);
+
+            // When the request is done, this will be called
+            request.onload = function () {
+                if (request.status == 200) {
+                    // show the result
+                    const response = JSON.parse(request.responseText);
+                    const orders = response.data;  // Array of products
+
+                    let tableBody = '';
+                    orders.forEach(order => {
+                        tableBody +=
+                            `<tr>
+                                                            <td>${order.applicationUser.email}</td>
+                                                    <td>${order.userPhoneNumber}</td>
+                                                    <td>${order.userAddress}</td>
+                                                    <td>${order.orderStatus}</td>
+                                                            <td>${order.totalPrice}</td>
+                                            <td>
+                                        <a href="/Admin/Order/Details/${order.id}" class="btn btn-warning"> Details </a>
+                                            </td>
+
+                                         </tr>`;
+                    });
+
+                    document.getElementById("productTableBoady").innerHTML = tableBody;
+
+                    // Initialize DataTable
+                    new DataTable(productTable);
+                }
+            };
+
+            request.send();
+        })
+
+
+        </script>
+
+
+}
+
+
+
+

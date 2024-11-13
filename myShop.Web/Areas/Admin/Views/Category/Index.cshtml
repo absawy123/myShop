@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Category>
+
+@{
+    ViewBag.PageTitle = "Category Management";
+    ViewBag.CartTitle = "Show All Categories";
+    Layout = "_Dashboard";
+
+}
+
+<a class="btn btn-outline-success"asp-area="Admin" asp-controller="Category" asp-action="Add"> Add New </a>
+@{
+    if (Model != null)
+    {
+        <table class="table table-hover">
+            <thead>
+            <td>Name </td>
+            <td>Created At </td>
+            <td>Description </td>
+            <td></td>
+            </thead>
+            @foreach (var category in Model)
+            {
+
+                <tr>
+                    <td> @category.Name</td>
+                    <td> @category.CreatedAt.ToString("yyyy/MM/dd")</td>
+                    <td> @category.Description</td>
+                    <td>
+                        <a class="btn btn-outline-primary" asp-route-id="@category.Id" asp-action="Edit" asp-controller="Category"asp-area="Admin" >Edit </a>
+                        <a class="btn btn-outline-danger deleteBtn" data-id="@category.Id" asp-action="Delete" asp-controller="Category">Delete </a>
+                    </td>
+
+                </tr>
+            }
+        </table>
+
+    }
+}
+
+
+<script>
+    const deleteBtn = document.querySelectorAll(".deleteBtn");
+
+    deleteBtn.forEach(btn => btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        const CategoryId = this.getAttribute("data-id");
+        const row = this.closest("tr");
+
+        // Show SweetAlert confirmation dialog
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "Cancel"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Only proceed with the delete request if user confirms
+                var request = new XMLHttpRequest();
+                request.open("GET", `/Admin/Category/Delete/${CategoryId}`);
+                request.send();
+                
+                request.onload = function () {
+                    if (request.status == 200) {
+                        Swal.fire(
+                            "Deleted!",
+                            "Category has been deleted.",
+                            "success"
+                        );
+                        row.remove(); // Remove the row from the table
+                    } else {
+                        Swal.fire(
+                            "Error!",
+                            "There was an issue deleting the category.",
+                            "error"
+                        );
+                    }
+                };
+            }
+        });
+    }));
+</script>
+
+
+
+
+
